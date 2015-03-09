@@ -6,7 +6,7 @@ import ru.ifmo.nsf.mathdep.optimization.lab1.*;
 /**
  * Created by edgar on 09.03.15.
  */
-public class Main {
+public class main {
     public static void main(String[] args) {
         Minimizer minimizer = new DichotomyMinimizer();
         Minimizer anotherMinimizer = new GoldenRatioMinimizer();
