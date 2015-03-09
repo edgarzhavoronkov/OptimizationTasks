@@ -35,12 +35,12 @@ public class main {
 
         ru.ifmo.nsf.mathdep.optimization.lab2.Minimizer descentMinimizer = new GradientDescentMinimizer();
         Point2D res = descentMinimizer.minimize(
-                (Double x, Double y) -> x * x * x * x + y * y * y * y - 5 * (x * y - x * x * y * y),
-                new Point2D(0.2, 0.8),
-                (Double x) -> x >= 0 && x <= 1,
-                (Double y) -> y >= 0 && y <= 1,
+                (Double x, Double y) -> (1 - x) * (1 - x) + 100 * (y - x * x) *(y - x * x),
+                new Point2D(0, 0),
+                (Double x) -> false,
+                (Double y) -> false,
                 1e-5,
-                1e-3);
+                1e-4);
         System.out.println(res.toString());
     }
 }

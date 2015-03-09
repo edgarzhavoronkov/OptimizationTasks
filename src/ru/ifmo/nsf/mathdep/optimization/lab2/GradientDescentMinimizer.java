@@ -19,11 +19,20 @@ public class GradientDescentMinimizer implements Minimizer {
                             Predicate<Double> domY,
                             double precision,
                             double stepSize) {
-        while (true) {
-            Point2D nextPoint = Point2D.sub(startPoint, Point2D.mul(getGradient(f, startPoint), stepSize));
-            if (getNorm(f.apply(nextPoint.getX(), nextPoint.getY()) - f.apply(startPoint.getX(), startPoint.getY())) < precision || domX.test(nextPoint.getX()) || domY.test(nextPoint.getY()))  return nextPoint;
+        Point2D nextPoint = new Point2D();
+        for (;;) {
+            Point2D grad = getGradient(f, startPoint);
+            nextPoint = Point2D.sub(startPoint, Point2D.mul(grad, stepSize));
+
+            Boolean stopCriteria1 = getNorm(Point2D.sub(nextPoint, startPoint)) < precision;
+            Boolean stopCriteria2 = domX.test(nextPoint.getX());
+            Boolean stopCriteria3 = domY.test(nextPoint.getY());
+
+            if (stopCriteria1 || stopCriteria2 || stopCriteria3 )  return nextPoint;
+
             startPoint = new Point2D(nextPoint.getX(), nextPoint.getY());
         }
+        //return nextPoint;
     }
 
     @Override
@@ -42,7 +51,7 @@ public class GradientDescentMinimizer implements Minimizer {
     }
 
     private double getNorm(double x) {
-        return x;
+        return x * x;
     }
 
     private double getNorm(Point2D point) {
