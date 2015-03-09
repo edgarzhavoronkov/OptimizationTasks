@@ -20,22 +20,22 @@ public class PoligonalChainMinimizer implements Minimizer {
 
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision, double L, int startTests) {
+        Map<Double, Double> observations = new HashMap<>();
         while (true) {
-            Map<Double, Double> observations = new HashMap<>(startTests);
             double step = (higherBound - lowerBound) / startTests;
             double start = lowerBound;
-            for (int i = 0; i < observations.size(); i++) {
+            for (int i = 0; i < startTests; i++) {
                 observations.put(start, f.apply(start));
                 start += step;
             }
             double fk = observations.values().stream().mapToDouble(i -> i).min().getAsDouble();
+
             DoubleFunction<Double> minorant =
                     (x) -> {
                         observations.forEach((k, v) -> f.apply(v - getNorm(x - v)));
                         return observations.values().stream().mapToDouble(i -> i).min().getAsDouble();
-
                     };
-            ArrayList<Double> pi = observations.keySet().stream().filter((i) -> f.apply(i) < fk).collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<Double> pi = observations.keySet().stream().filter((i) -> f.apply(i) <= fk).collect(Collectors.toCollection(ArrayList::new));
             Map<Double, Double> fMinus = new HashMap<>();
             for (Double x : pi) {
                 fMinus.put(x, minorant.apply(x));
@@ -48,7 +48,9 @@ public class PoligonalChainMinimizer implements Minimizer {
                 }
             }).getKey();
 
-            if (fk - minorant.apply(xNext) <= precision) return xNext;
+            if (fk - minorant.apply(xNext) <= precision) return f.apply(xNext);
+
+            startTests++;
         }
     }
 
