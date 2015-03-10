@@ -3,9 +3,7 @@ package ru.ifmo.nsf.mathdep.optimization.lab1;
 import java.util.ArrayList;
 import java.util.function.DoubleFunction;
 
-/**
- * Created by edgar on 09.03.15.
- */
+
 public class BruteForceMinimizer implements Minimizer {
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {

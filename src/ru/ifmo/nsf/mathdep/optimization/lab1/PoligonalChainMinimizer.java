@@ -4,9 +4,7 @@ import java.util.*;
 import java.util.function.DoubleFunction;
 import java.util.stream.Collectors;
 
-/**
- * Created by edgar on 09.03.15.
- */
+
 public class PoligonalChainMinimizer implements Minimizer {
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {
@@ -32,7 +30,7 @@ public class PoligonalChainMinimizer implements Minimizer {
 
             DoubleFunction<Double> minorant =
                     (x) -> {
-                        observations.forEach((k, v) -> f.apply(v - getNorm(x - v)));
+                        observations.forEach((k, v) -> f.apply(v - L * getNorm(x - v)));
                         return observations.values().stream().mapToDouble(i -> i).min().getAsDouble();
                     };
             ArrayList<Double> pi = observations.keySet().stream().filter((i) -> f.apply(i) <= fk).collect(Collectors.toCollection(ArrayList::new));

@@ -2,9 +2,7 @@ package ru.ifmo.nsf.mathdep.optimization.lab1;
 
 import java.util.function.DoubleFunction;
 
-/**
- * Created by edgar on 09.03.15.
- */
+
 public class DichotomyMinimizer implements Minimizer {
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {

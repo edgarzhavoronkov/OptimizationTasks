@@ -2,9 +2,7 @@ package ru.ifmo.nsf.mathdep.optimization.lab1;
 
 import java.util.function.DoubleFunction;
 
-/**
- * Created by edgar on 09.03.15.
- */
+
 public class GoldenRatioMinimizer implements Minimizer{
     private final double GOLDEN_RATIO = (Math.sqrt(5) + 1) / 2;
 

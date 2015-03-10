@@ -1,18 +1,10 @@
 package ru.ifmo.nsf.mathdep.optimization;
 
-import com.sun.javafx.collections.MappingChange;
-import javafx.util.Pair;
 import ru.ifmo.nsf.mathdep.optimization.lab1.*;
-import ru.ifmo.nsf.mathdep.optimization.lab1.Minimizer;
-import ru.ifmo.nsf.mathdep.optimization.lab2.*;
+import ru.ifmo.nsf.mathdep.optimization.lab2.GradientDescentMinimizer;
 import ru.ifmo.nsf.mathdep.optimization.lab2.utils.Point2D;
 
-import java.util.Map;
 
-
-/**
- * Created by edgar on 09.03.15.
- */
 public class main {
     public static void main(String[] args) {
         Minimizer minimizer = new DichotomyMinimizer();

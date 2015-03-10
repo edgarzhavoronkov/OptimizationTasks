@@ -1,14 +1,11 @@
 package ru.ifmo.nsf.mathdep.optimization.lab2;
 
-import javafx.util.Pair;
 import ru.ifmo.nsf.mathdep.optimization.lab2.utils.Point2D;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-/**
- * Created by edgar on 09.03.15.
- */
+
 public class GradientDescentMinimizer implements Minimizer {
     private final double EPS = 1e-5;
 

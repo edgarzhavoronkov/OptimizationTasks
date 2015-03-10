@@ -4,9 +4,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.function.DoubleFunction;
 
-/**
- * Created by edgar on 09.03.15.
- */
+
 public class FibonacciMinimizer implements Minimizer {
 
 
