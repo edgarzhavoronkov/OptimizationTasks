@@ -5,7 +5,7 @@ import java.util.function.DoubleFunction;
 import java.util.stream.Collectors;
 
 
-public class PoligonalChainMinimizer implements Minimizer {
+public class PoligonalChainMinimizer implements SingleArgumentFunctionMinimizer {
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {
         return 0;

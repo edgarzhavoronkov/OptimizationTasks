@@ -3,7 +3,7 @@ package ru.ifmo.nsf.mathdep.optimization.lab1;
 import java.util.function.DoubleFunction;
 
 
-public class DichotomyMinimizer implements Minimizer {
+public class DichotomyMinimizer implements SingleArgumentFunctionMinimizer {
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {
         double mid = 0;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.function.DoubleFunction;
 
 
-public class BruteForceMinimizer implements Minimizer {
+public class BruteForceMinimizer implements SingleArgumentFunctionMinimizer {
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {
         return 0;

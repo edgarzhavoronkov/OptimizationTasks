@@ -5,7 +5,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.function.DoubleFunction;
 
 
-public class FibonacciMinimizer implements Minimizer {
+public class FibonacciMinimizer implements SingleArgumentFunctionMinimizer {
 
 
     private Long fib(int n) {

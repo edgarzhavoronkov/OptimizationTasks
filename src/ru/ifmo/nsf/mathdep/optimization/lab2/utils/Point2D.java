@@ -1,8 +1,5 @@
 package ru.ifmo.nsf.mathdep.optimization.lab2.utils;
 
-/**
- * Created by edgar on 09.03.15.
- */
 public class Point2D {
     private double x;
     private double y;

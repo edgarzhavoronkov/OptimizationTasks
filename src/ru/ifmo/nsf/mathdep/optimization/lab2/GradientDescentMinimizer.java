@@ -1,12 +1,13 @@
 package ru.ifmo.nsf.mathdep.optimization.lab2;
 
+import ru.ifmo.nsf.mathdep.optimization.lab1.GoldenRatioMinimizer;
 import ru.ifmo.nsf.mathdep.optimization.lab2.utils.Point2D;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 
-public class GradientDescentMinimizer implements Minimizer {
+public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer {
     private final double EPS = 1e-5;
 
     @Override
@@ -38,7 +39,31 @@ public class GradientDescentMinimizer implements Minimizer {
                             Predicate<Double> domX,
                             Predicate<Double> domY,
                             double precision) {
-        return null;
+        Point2D nextPoint = new Point2D();
+
+        GoldenRatioMinimizer goldenRatioMinimizer = new GoldenRatioMinimizer();
+        for (;;) {
+            Point2D grad = getGradient(f, startPoint);
+            final Point2D finalStartPoint = startPoint;
+            double stepSize = goldenRatioMinimizer.argmin(
+                    (x) -> {
+                        Point2D point = Point2D.sub(finalStartPoint, Point2D.mul(getGradient(f, finalStartPoint), x));
+                        return  f.apply(point.getX(), point.getY());
+                    },
+                    0.0,
+                    1000.0,
+                    1e-3);
+            nextPoint = Point2D.sub(startPoint, Point2D.mul(grad, stepSize));
+
+            Boolean stopCriteria1 = getNorm(Point2D.sub(nextPoint, startPoint)) < precision;
+            Boolean stopCriteria2 = domX.test(nextPoint.getX());
+            Boolean stopCriteria3 = domY.test(nextPoint.getY());
+
+            if (stopCriteria1 || stopCriteria2 || stopCriteria3 )  return nextPoint;
+
+            startPoint = new Point2D(nextPoint.getX(), nextPoint.getY());
+        }
+        //return nextPoint;
     }
 
     private Point2D getGradient(BiFunction<Double, Double, Double> f, Point2D point) {
