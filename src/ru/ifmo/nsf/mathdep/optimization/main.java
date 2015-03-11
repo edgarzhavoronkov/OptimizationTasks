@@ -5,6 +5,9 @@ import ru.ifmo.nsf.mathdep.optimization.lab2.DoubleArgumentFunctionMinimizer;
 import ru.ifmo.nsf.mathdep.optimization.lab2.GradientDescentMinimizer;
 import ru.ifmo.nsf.mathdep.optimization.lab2.utils.Point2D;
 
+import java.util.function.BiFunction;
+import java.util.function.DoubleFunction;
+
 
 public class main {
     public static void main(String[] args) {
@@ -14,11 +17,14 @@ public class main {
         SingleArgumentFunctionMinimizer yetYetAnotherMinimizer = new PoligonalChainMinimizer();
         SingleArgumentFunctionMinimizer yetYetYetAnotherMinimizer = new BruteForceMinimizer();
 
-        double min = minimizer.minimize((x) -> x * x + 3, 0, 1, 1e-3);
-        double anotherMin = anotherMinimizer.minimize((x) -> x * x + 3, 0, 1, 1e-3);
-        double yetAnotherMin = yetAnotherMinimizer.minimize((x) -> x * x + 3, 0, 1, 20);
-        double yetYetAnotherMin = yetYetAnotherMinimizer.minimize((x) -> x * x + 3, 0, 1, 1e-3, 2, 10);
-        double yetYetYetAnotherMin = yetYetYetAnotherMinimizer.minimize((x) -> x * x + 3, 0, 1, 1000);
+        DoubleFunction<Double> f = (x) -> x * x + 3;
+        BiFunction<Double, Double, Double> g = (x, y) -> (1 - x) * (1 - x) + 100 * (y - x * x) *(y - x * x);
+
+        double min = minimizer.minimize(f, 0, 1, 1e-3);
+        double anotherMin = anotherMinimizer.minimize(f, 0, 1, 1e-3);
+        double yetAnotherMin = yetAnotherMinimizer.minimize(f, 0, 1, 20);
+        double yetYetAnotherMin = yetYetAnotherMinimizer.minimize(f, 0, 1, 1e-3, 2, 10);
+        double yetYetYetAnotherMin = yetYetYetAnotherMinimizer.minimize(f, 0, 1, 1000);
 
         System.out.println(min);
         System.out.println(anotherMin);
@@ -27,22 +33,23 @@ public class main {
         System.out.println(yetYetYetAnotherMin);
 
         DoubleArgumentFunctionMinimizer descentMinimizer = new GradientDescentMinimizer();
-        Point2D res = descentMinimizer.minimize(
-                (Double x, Double y) -> (1 - x) * (1 - x) + 100 * (y - x * x) *(y - x * x),
-                new Point2D(0, 0),
-                (Double x) -> false,
-                (Double y) -> false,
-                1e-5,
-                1e-4);
 
-        Point2D anotherRes = descentMinimizer.minimize(
-                (Double x, Double y) -> (1 - x) * (1 - x) + 100 * (y - x * x) *(y - x * x),
+        Point2D res = descentMinimizer.minimize(
+                g,
                 new Point2D(2, 2),
                 (Double x) -> false,
                 (Double y) -> false,
-                1e-5);
+                1e-2,
+                1e-4);
 
-        System.out.println(res.toString());
-        System.out.println(anotherRes.toString());
+        Point2D anotherRes = descentMinimizer.minimize(
+                g,
+                new Point2D(2, 2),
+                (Double x) -> false,
+                (Double y) -> false,
+                1e-2);
+
+        System.out.printf("min g = %f at point %s using constant step length\n", g.apply(res.getX(), res.getY()), res.toString());
+        System.out.printf("min g = %f at point %s using variadic step length\n", g.apply(res.getX(), res.getY()), anotherRes.toString());
     }
 }
