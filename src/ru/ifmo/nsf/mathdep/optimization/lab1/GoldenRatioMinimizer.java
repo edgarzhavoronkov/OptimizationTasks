@@ -17,7 +17,7 @@ public class GoldenRatioMinimizer implements SingleArgumentFunctionMinimizer {
             PrintWriter writer = new PrintWriter("GoldenRatioMinimizerOut.txt");
 
             while (!(Math.abs(higherBound - lowerBound) < precision)) {
-                double left = higherBound -((higherBound - lowerBound) / GOLDEN_RATIO);
+                double left = higherBound - ((higherBound - lowerBound) / GOLDEN_RATIO);
                 double right = lowerBound + ((higherBound - lowerBound) / GOLDEN_RATIO);
 
                 //debug info, todo: remove

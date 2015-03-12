@@ -21,12 +21,15 @@ public class PolygonalChainMinimizer implements SingleArgumentFunctionMinimizer 
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision, double L, int startTests) {
         try {
+
             PrintWriter writer = new PrintWriter("PoligonalChainMinimizerOut.txt");
-            Map<Double, Double> observations = new HashMap<>();
+            Map<Double, Double> fMinus = new HashMap<>();
+            ArrayList<Double> pi = new ArrayList<>();
             int counter = 0;
             while (true) {
                 double step = (higherBound - lowerBound) / startTests;
                 double start = lowerBound;
+                Map<Double, Double> observations = new HashMap<>();
                 for (int i = 0; i < startTests; i++) {
                     observations.put(start, f.apply(start));
                     start += step;
@@ -41,8 +44,8 @@ public class PolygonalChainMinimizer implements SingleArgumentFunctionMinimizer 
                             return vals.stream().mapToDouble(i -> i).max().getAsDouble();
                         };
 
-                ArrayList<Double> pi = observations.keySet().stream().filter((i) -> f.apply(i) <= fk).collect(Collectors.toCollection(ArrayList::new));
-                Map<Double, Double> fMinus = new HashMap<>();
+                pi.addAll(observations.keySet().stream().filter((i) -> f.apply(i) <= fk).collect(Collectors.toCollection(ArrayList::new)));
+
                 for (Double x : pi) {
                     fMinus.put(x, minorant.apply(x));
                 }
@@ -54,7 +57,7 @@ public class PolygonalChainMinimizer implements SingleArgumentFunctionMinimizer 
                     }
                 }).getKey();
 
-                if (fk - minorant.apply(xNext) <= precision) {
+                if (Math.abs(fk - minorant.apply(xNext)) <= precision) {
                     writer.write("Function: \n");
                     for (Map.Entry<Double, Double> entry : observations.entrySet()) {
                         writer.format("%.5f %.5f\n", entry.getKey(), entry.getValue());

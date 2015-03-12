@@ -8,7 +8,6 @@ import java.util.function.DoubleFunction;
 public class DichotomyMinimizer implements SingleArgumentFunctionMinimizer {
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {
-
         try {
             double mid = 0;
             double finalLength = higherBound - lowerBound;

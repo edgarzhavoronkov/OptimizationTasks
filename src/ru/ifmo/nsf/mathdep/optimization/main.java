@@ -17,13 +17,14 @@ public class main {
         SingleArgumentFunctionMinimizer yetYetAnotherMinimizer = new PolygonalChainMinimizer();
         SingleArgumentFunctionMinimizer yetYetYetAnotherMinimizer = new BruteForceMinimizer();
 
-        DoubleFunction<Double> f = Math::sin;
+        DoubleFunction<Double> f = (x) -> x * x * x + 5 * x * x - 3;
+        DoubleFunction<Double> f1 = (x) -> x*x*x - 3.14 * x * x - 1.4881488881488*x + 7;
         BiFunction<Double, Double, Double> g = (x, y) -> (x * x * x * x) + (y * y * y * y) - 5 * (x * y - x * x * y * y);
 
         double min = minimizer.minimize(f, 0, 3 * Math.PI, 1e-3);
         double anotherMin = anotherMinimizer.minimize(f, 0, 3 * Math.PI, 1e-3);
         double yetAnotherMin = yetAnotherMinimizer.minimize(f, 0, 3 * Math.PI, 20);
-        double yetYetAnotherMin = yetYetAnotherMinimizer.minimize(f, 0, 3 * Math.PI, 1e-3, 1, 100);
+        double yetYetAnotherMin = yetYetAnotherMinimizer.minimize(f1, 0, 3, 1e-3, 1, 5);
         double yetYetYetAnotherMin = yetYetYetAnotherMinimizer.minimize(f, 0, 3 * Math.PI, 1000);
 
         System.out.println(min);
