@@ -23,12 +23,14 @@ public class PolygonalChainMinimizer implements SingleArgumentFunctionMinimizer 
         try {
             PrintWriter writer = new PrintWriter("PoligonalChainMinimizerOut.txt");
             Map<Double, Double> observations = new HashMap<>();
+            int counter = 0;
             while (true) {
                 double step = (higherBound - lowerBound) / startTests;
                 double start = lowerBound;
                 for (int i = 0; i < startTests; i++) {
                     observations.put(start, f.apply(start));
                     start += step;
+                    counter++;
                 }
                 double fk = observations.values().stream().mapToDouble(i -> i).min().getAsDouble();
 
@@ -38,6 +40,7 @@ public class PolygonalChainMinimizer implements SingleArgumentFunctionMinimizer 
                             observations.forEach((Double k, Double v) -> vals.add(v - L * Math.abs(x - k)));
                             return vals.stream().mapToDouble(i -> i).max().getAsDouble();
                         };
+
                 ArrayList<Double> pi = observations.keySet().stream().filter((i) -> f.apply(i) <= fk).collect(Collectors.toCollection(ArrayList::new));
                 Map<Double, Double> fMinus = new HashMap<>();
                 for (Double x : pi) {
@@ -60,6 +63,7 @@ public class PolygonalChainMinimizer implements SingleArgumentFunctionMinimizer 
                     for (Map.Entry<Double, Double> entry: fMinus.entrySet()) {
                         writer.format("%.5f %.5f\n", entry.getKey(), entry.getValue());
                     }
+                    writer.format("I calculated function for %d times", counter);
                     writer.close();
                     return f.apply(xNext);
                 }

@@ -42,7 +42,8 @@ public class FibonacciMinimizer implements SingleArgumentFunctionMinimizer {
 
             double fLeft = f.apply(left);
             double fRight = f.apply(right);
-
+            int counter = 2;
+            int iters = iterations;
             while (iterations != 1) {
                 double intervalLength = higherBound - lowerBound;
                 if (fLeft > fRight) {
@@ -51,17 +52,20 @@ public class FibonacciMinimizer implements SingleArgumentFunctionMinimizer {
                     right = higherBound - (left - lowerBound);
                     fLeft = fRight;
                     fRight = f.apply(right);
+                    counter++;
                 } else {
                     higherBound = right;
                     right = left;
                     left = lowerBound + (higherBound - right);
                     fRight = fLeft;
                     fLeft = f.apply(left);
+                    counter++;
                 }
                 finalLength = higherBound - lowerBound;
                 writer.format("%.5f %.5f %.5f %.5f\n", lowerBound, higherBound, finalLength, (finalLength / intervalLength));
                 --iterations;
             }
+            writer.format("I did %d iterations and calculated function for %d times", iters, counter);
             writer.close();
             return f.apply(left);
         } catch (FileNotFoundException e) {

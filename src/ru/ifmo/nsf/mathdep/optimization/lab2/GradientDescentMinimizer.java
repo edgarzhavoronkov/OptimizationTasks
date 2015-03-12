@@ -3,12 +3,14 @@ package ru.ifmo.nsf.mathdep.optimization.lab2;
 import ru.ifmo.nsf.mathdep.optimization.lab1.GoldenRatioMinimizer;
 import ru.ifmo.nsf.mathdep.optimization.lab2.utils.Point2D;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 
 public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer {
-    private final double EPS = 1e-5;
+    private final double EPS = 1e-1;
 
     @Override
     public Point2D minimize(BiFunction<Double, Double, Double> f,
@@ -17,21 +19,40 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
                             Predicate<Double> domY,
                             double precision,
                             double stepSize) {
-        Point2D nextPoint = new Point2D();
-        for (;;) {
-            Point2D grad = getGradient(f, startPoint);
-            nextPoint = Point2D.sub(startPoint, Point2D.mul(grad, stepSize));
+        try {
+            Point2D nextPoint = new Point2D();
 
-            Boolean stopCriteria1 = getNorm(Point2D.sub(nextPoint, startPoint)) < precision;
-            Boolean stopCriteria2 = domX.test(nextPoint.getX());
-            Boolean stopCriteria3 = domY.test(nextPoint.getY());
-            Boolean stopCriteria4 = Math.abs(f.apply(nextPoint.getX(), nextPoint.getY()) - f.apply(startPoint.getX(), startPoint.getY())) < precision;
+            int gradientComputationsCounter = 0;
+            int functionComputationsCounter = 0;
+            PrintWriter writer = new PrintWriter("GradientDescentMinimizerOut1.txt");
 
-            if (stopCriteria1 || stopCriteria2 || stopCriteria3 || stopCriteria4)  return nextPoint;
+            for (;;) {
+                Point2D grad = getGradient(f, startPoint);
 
-            startPoint = new Point2D(nextPoint.getX(), nextPoint.getY());
+                gradientComputationsCounter++;
+                nextPoint = Point2D.sub(startPoint, Point2D.mul(grad, stepSize));
+
+                Boolean stopCriteria1 = getNorm(Point2D.sub(nextPoint, startPoint)) < precision;
+                Boolean stopCriteria2 = domX.test(nextPoint.getX());
+                Boolean stopCriteria3 = domY.test(nextPoint.getY());
+
+                Boolean stopCriteria4 = Math.abs(f.apply(nextPoint.getX(), nextPoint.getY()) - f.apply(startPoint.getX(), startPoint.getY())) < precision;
+                functionComputationsCounter++;
+
+                writer.format("%s -> %.5f\n", startPoint.toString(), f.apply(startPoint.getX(), startPoint.getY()));
+
+                if (stopCriteria1 || stopCriteria2 || stopCriteria3 || stopCriteria4) {
+                    writer.format("I calculated gradient for %d times, and function for %d times", gradientComputationsCounter, functionComputationsCounter);
+                    writer.close();
+                    return nextPoint;
+                }
+
+                startPoint = new Point2D(nextPoint.getX(), nextPoint.getY());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        //return nextPoint;
+        return null;
     }
 
     @Override
@@ -40,32 +61,46 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
                             Predicate<Double> domX,
                             Predicate<Double> domY,
                             double precision) {
-        Point2D nextPoint = new Point2D();
+        try {
+            Point2D nextPoint = new Point2D();
+            GoldenRatioMinimizer goldenRatioMinimizer = new GoldenRatioMinimizer();
+            int gradientComputationsCounter = 0;
+            int functionComputationsCounter = 0;
+            PrintWriter writer = new PrintWriter("GradientDescentMinimizerOut2.txt");
+            for (; ; ) {
+                Point2D grad = getGradient(f, startPoint);
+                gradientComputationsCounter++;
+                final Point2D finalStartPoint = startPoint;
+                double stepSize = goldenRatioMinimizer.argmin(
 
-        GoldenRatioMinimizer goldenRatioMinimizer = new GoldenRatioMinimizer();
-        for (int i = 0; i < 1e6; i++) {
-            Point2D grad = getGradient(f, startPoint);
-            final Point2D finalStartPoint = startPoint;
-            double stepSize = goldenRatioMinimizer.argmin(
-                    (x) -> {
-                        Point2D point = Point2D.sub(finalStartPoint, Point2D.mul(grad, x));
-                        return  f.apply(point.getX(), point.getY());
-                    },
-                    0.0,
-                    1.0,
-                    1e-3);
-            nextPoint = Point2D.sub(startPoint, Point2D.mul(grad, stepSize));
+                        (x) -> {
+                            Point2D point = Point2D.sub(finalStartPoint, Point2D.mul(grad, x));
+                            return f.apply(point.getX(), point.getY());
+                        },
 
-            Boolean stopCriteria1 = getNorm(Point2D.sub(nextPoint, startPoint)) < precision;
-            Boolean stopCriteria2 = domX.test(nextPoint.getX());
-            Boolean stopCriteria3 = domY.test(nextPoint.getY());
-            Boolean stopCriteria4 = Math.abs(f.apply(nextPoint.getX(), nextPoint.getY()) - f.apply(startPoint.getX(), startPoint.getY())) < precision;
+                        0.0,
+                        1.0,
+                        1e-2);
 
-            //if (stopCriteria1 || stopCriteria2 || stopCriteria3 || stopCriteria4)  return nextPoint;
+                nextPoint = Point2D.sub(startPoint, Point2D.mul(grad, stepSize));
+                writer.format("%s -> %.5f\n", startPoint.toString(), f.apply(startPoint.getX(), startPoint.getY()));
 
-            startPoint = new Point2D(nextPoint.getX(), nextPoint.getY());
+                Boolean stopCriteria1 = getNorm(Point2D.sub(nextPoint, startPoint)) < precision;
+                Boolean stopCriteria2 = domX.test(nextPoint.getX());
+                Boolean stopCriteria3 = domY.test(nextPoint.getY());
+                Boolean stopCriteria4 = Math.abs(f.apply(nextPoint.getX(), nextPoint.getY()) - f.apply(startPoint.getX(), startPoint.getY())) < precision;
+                functionComputationsCounter++;
+                if (stopCriteria1 || stopCriteria2 || stopCriteria3 || stopCriteria4) {
+                    writer.format("I calculated gradient for %d times, and function for %d times", gradientComputationsCounter, functionComputationsCounter);
+                    writer.close();
+                    return nextPoint;
+                }
+                startPoint = new Point2D(nextPoint.getX(), nextPoint.getY());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        return nextPoint;
+        return null;
     }
 
     private Point2D getGradient(BiFunction<Double, Double, Double> f, Point2D point) {

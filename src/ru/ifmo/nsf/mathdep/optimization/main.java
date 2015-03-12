@@ -36,17 +36,17 @@ public class main {
 
         Point2D res = descentMinimizer.minimize(
                 g,
-                new Point2D(2, 2),
-                (Double x) -> x >= 0 && x <= 1,
-                (Double y) -> y >= 0 && y <= 1,
+                new Point2D(0.5, 0.5),
+                (Double x) -> x >= 0 && x <= 10,
+                (Double y) -> y >= 0 && y <= 10,
                 1e-2,
-                1e-4);
+                1e-5);
 
         Point2D anotherRes = descentMinimizer.minimize(
                 g,
-                new Point2D(2, 2),
-                (Double x) -> x >= 0 && x <= 1,
-                (Double y) -> y >= 0 && y <= 1,
+                new Point2D(0.5, 0.5),
+                (Double x) -> x >= 0 && x <= 10,
+                (Double y) -> y >= 0 && y <= 10,
                 1e-2);
 
         System.out.printf("min g = %f at point %s using constant step length\n", g.apply(res.getX(), res.getY()), res.toString());

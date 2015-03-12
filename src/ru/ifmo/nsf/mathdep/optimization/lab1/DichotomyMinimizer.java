@@ -13,7 +13,7 @@ public class DichotomyMinimizer implements SingleArgumentFunctionMinimizer {
             double mid = 0;
             double finalLength = higherBound - lowerBound;
             PrintWriter writer = new PrintWriter("DichotomyMinimizerOut.txt");
-
+            int counter = 0;
             while (!(Math.abs(higherBound - lowerBound) < precision)) {
                 mid = (higherBound + lowerBound) / 2;
 
@@ -22,7 +22,9 @@ public class DichotomyMinimizer implements SingleArgumentFunctionMinimizer {
 
 
                 double fLeft = f.apply(mid - precision);
+                counter++;
                 double fRight = f.apply(mid + precision);
+                counter++;
                 if (fLeft < fRight) {
                     higherBound = mid;
                 } else {
@@ -32,6 +34,7 @@ public class DichotomyMinimizer implements SingleArgumentFunctionMinimizer {
                 finalLength = higherBound - lowerBound;
                 writer.format("%.5f %.5f %.5f %.5f\n", lowerBound, higherBound, finalLength, (finalLength / intervalLength));
             }
+            writer.format("I calculated function for %d times", counter);
             writer.close();
             return f.apply(mid);
         } catch (FileNotFoundException e) {
