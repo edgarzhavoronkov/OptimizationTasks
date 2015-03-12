@@ -1,5 +1,7 @@
 package ru.ifmo.nsf.mathdep.optimization.lab1;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.function.DoubleFunction;
 
 
@@ -8,26 +10,46 @@ public class GoldenRatioMinimizer implements SingleArgumentFunctionMinimizer {
 
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {
-        while (!(Math.abs(higherBound - lowerBound) < precision)) {
-            double left = higherBound -((higherBound - lowerBound) / GOLDEN_RATIO);
-            double right = lowerBound + ((higherBound - lowerBound) / GOLDEN_RATIO);
+        try {
+            double mid = 0;
+            double finalLength = higherBound - lowerBound;
+            PrintWriter writer = new PrintWriter("GoldenRatioMinimizerOut.txt");
 
-            double fLeft = f.apply(left);
-            double fRight = f.apply(right);
+            while (!(Math.abs(higherBound - lowerBound) < precision)) {
+                double left = higherBound -((higherBound - lowerBound) / GOLDEN_RATIO);
+                double right = lowerBound + ((higherBound - lowerBound) / GOLDEN_RATIO);
 
-            if (fLeft >= fRight) {
-                lowerBound = left;
-            } else {
-                higherBound = right;
+                //debug info, todo: remove
+                double intervalLength = higherBound - lowerBound;
+
+                double fLeft = f.apply(left);
+                double fRight = f.apply(right);
+
+                if (fLeft >= fRight) {
+                    lowerBound = left;
+                } else {
+                    higherBound = right;
+                }
+
+                finalLength = higherBound - lowerBound;
+                writer.format("%.5f %.5f %.5f %.5f\n", lowerBound, higherBound, finalLength, (finalLength / intervalLength));
             }
+            writer.close();
+            return f.apply((lowerBound + higherBound) / 2);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        return f.apply((lowerBound + higherBound) / 2);
+        return 0;
     }
 
     public double argmin(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {
         while (!(Math.abs(higherBound - lowerBound) < precision)) {
-            double left = higherBound -((higherBound - lowerBound) / GOLDEN_RATIO);
+            double left = higherBound - ((higherBound - lowerBound) / GOLDEN_RATIO);
             double right = lowerBound + ((higherBound - lowerBound) / GOLDEN_RATIO);
+
+            //debug info, todo: remove
+            double intervalLength = higherBound - lowerBound;
 
             double fLeft = f.apply(left);
             double fRight = f.apply(right);
@@ -41,7 +63,7 @@ public class GoldenRatioMinimizer implements SingleArgumentFunctionMinimizer {
         return (lowerBound + higherBound) / 2;
     }
 
-    @Override
+        @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, int iterations) {
         return 0;
     }
