@@ -33,8 +33,8 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
                 nextPoint = Point2D.sub(startPoint, Point2D.mul(grad, stepSize));
 
                 Boolean stopCriteria1 = getNorm(Point2D.sub(nextPoint, startPoint)) < precision;
-                Boolean stopCriteria2 = domX.test(nextPoint.getX());
-                Boolean stopCriteria3 = domY.test(nextPoint.getY());
+                Boolean stopCriteria2 = !domX.test(nextPoint.getX());
+                Boolean stopCriteria3 = !domY.test(nextPoint.getY());
 
                 Boolean stopCriteria4 = Math.abs(f.apply(nextPoint.getX(), nextPoint.getY()) - f.apply(startPoint.getX(), startPoint.getY())) < precision;
                 functionComputationsCounter++;
@@ -86,8 +86,8 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
                 writer.format("%s -> %.5f\n", startPoint.toString(), f.apply(startPoint.getX(), startPoint.getY()));
 
                 Boolean stopCriteria1 = getNorm(Point2D.sub(nextPoint, startPoint)) < precision;
-                Boolean stopCriteria2 = domX.test(nextPoint.getX());
-                Boolean stopCriteria3 = domY.test(nextPoint.getY());
+                Boolean stopCriteria2 = !domX.test(nextPoint.getX());
+                Boolean stopCriteria3 = !domY.test(nextPoint.getY());
                 Boolean stopCriteria4 = Math.abs(f.apply(nextPoint.getX(), nextPoint.getY()) - f.apply(startPoint.getX(), startPoint.getY())) < precision;
                 functionComputationsCounter++;
                 if (stopCriteria1 || stopCriteria2 || stopCriteria3 || stopCriteria4) {

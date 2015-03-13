@@ -24,28 +24,28 @@ public class main {
         double min = minimizer.minimize(f, 0, 3 * Math.PI, 1e-3);
         double anotherMin = anotherMinimizer.minimize(f, 0, 3 * Math.PI, 1e-3);
         double yetAnotherMin = yetAnotherMinimizer.minimize(f, 0, 3 * Math.PI, 20);
-        double yetYetAnotherMin = yetYetAnotherMinimizer.minimize(f1, 0, 3, 1e-3, 1, 5);
+        //double yetYetAnotherMin = yetYetAnotherMinimizer.minimize(f1, 0, 3, 1e-3, 1, 5);
         double yetYetYetAnotherMin = yetYetYetAnotherMinimizer.minimize(f, 0, 3 * Math.PI, 1000);
 
         System.out.println(min);
         System.out.println(anotherMin);
         System.out.println(yetAnotherMin);
-        System.out.println(yetYetAnotherMin);
+        //System.out.println(yetYetAnotherMin);
         System.out.println(yetYetYetAnotherMin);
 
         DoubleArgumentFunctionMinimizer descentMinimizer = new GradientDescentMinimizer();
 
         Point2D res = descentMinimizer.minimize(
                 g,
-                new Point2D(0.5, 0.5),
+                new Point2D(2, 2),
                 (Double x) -> x >= 0 && x <= 10,
                 (Double y) -> y >= 0 && y <= 10,
                 1e-2,
-                1e-5);
+                1e-2);
 
         Point2D anotherRes = descentMinimizer.minimize(
                 g,
-                new Point2D(0.5, 0.5),
+                new Point2D(2, 2),
                 (Double x) -> x >= 0 && x <= 10,
                 (Double y) -> y >= 0 && y <= 10,
                 1e-2);
