@@ -35,7 +35,6 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
                 Boolean stopCriteria1 = getNorm(Point2D.sub(nextPoint, startPoint)) < precision;
                 Boolean stopCriteria2 = !domX.test(nextPoint.getX());
                 Boolean stopCriteria3 = !domY.test(nextPoint.getY());
-
                 Boolean stopCriteria4 = Math.abs(f.apply(nextPoint.getX(), nextPoint.getY()) - f.apply(startPoint.getX(), startPoint.getY())) < precision;
                 functionComputationsCounter++;
 
@@ -48,6 +47,8 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
                 }
 
                 startPoint = new Point2D(nextPoint.getX(), nextPoint.getY());
+
+                
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -72,14 +73,12 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
                 gradientComputationsCounter++;
                 final Point2D finalStartPoint = startPoint;
                 double stepSize = goldenRatioMinimizer.argmin(
-
                         (x) -> {
                             Point2D point = Point2D.sub(finalStartPoint, Point2D.mul(grad, x));
                             return f.apply(point.getX(), point.getY());
                         },
-
                         0.0,
-                        1.0,
+                        10.0,
                         1e-2);
 
                 nextPoint = Point2D.sub(startPoint, Point2D.mul(grad, stepSize));

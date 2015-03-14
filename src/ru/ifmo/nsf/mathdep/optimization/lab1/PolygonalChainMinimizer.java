@@ -19,58 +19,43 @@ public class PolygonalChainMinimizer implements SingleArgumentFunctionMinimizer 
     }
 
     @Override
-    public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision, double L, int startTests) {
+    public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision, double L) {
         try {
-
-            PrintWriter writer = new PrintWriter("PoligonalChainMinimizerOut.txt");
-            Map<Double, Double> fMinus = new HashMap<>();
-            ArrayList<Double> pi = new ArrayList<>();
+            GoldenRatioMinimizer minimizer = new GoldenRatioMinimizer();
+            PrintWriter writer = new PrintWriter("PolygonalChainMinimizerOut.txt");
             int counter = 0;
+
+            //zero iteration
+
+            double x0 = (lowerBound + higherBound) / 2;
+
+            double f0 = f.apply(x0);
+
+            DoubleFunction<Double> g0 = (x) -> f0 - L * Math.abs(x - x0);
+
+            double x1 = minimizer.argmin(g0, lowerBound, higherBound, precision);
+
+            double xPrev = x1;
+
+            DoubleFunction<Double> pPrev = g0;
+            writer.format("Polygonal chain:\n");
+            writer.format("%.5f -> %.5f\n", x0, g0.apply(x0));
+
             while (true) {
-                double step = (higherBound - lowerBound) / startTests;
-                double start = lowerBound;
-                Map<Double, Double> observations = new HashMap<>();
-                for (int i = 0; i < startTests; i++) {
-                    observations.put(start, f.apply(start));
-                    start += step;
-                    counter++;
-                }
-                double fk = observations.values().stream().mapToDouble(i -> i).min().getAsDouble();
+                final double finalXPrev = xPrev;
+                DoubleFunction<Double> gi = (x) -> f.apply(finalXPrev) - L * Math.abs(x - finalXPrev);
+                final DoubleFunction<Double> finalPPrev = pPrev;
+                DoubleFunction<Double> pi = (x) -> Math.max(gi.apply(x), finalPPrev.apply(x));
+                double xNext = minimizer.argmin(pi, lowerBound, higherBound, precision);
 
-                DoubleFunction<Double> minorant =
-                        (x) -> {
-                            ArrayList<Double> vals = new ArrayList<>();
-                            observations.forEach((Double k, Double v) -> vals.add(v - L * Math.abs(x - k)));
-                            return vals.stream().mapToDouble(i -> i).max().getAsDouble();
-                        };
+                writer.format("%.5f -> %.5f\n", xPrev, pPrev.apply(xPrev));
 
-                pi.addAll(observations.keySet().stream().filter((i) -> f.apply(i) <= fk).collect(Collectors.toCollection(ArrayList::new)));
-
-                for (Double x : pi) {
-                    fMinus.put(x, minorant.apply(x));
-                }
-
-                double xNext = Collections.min(fMinus.entrySet(), new Comparator<Map.Entry<Double, Double>>() {
-                    @Override
-                    public int compare(Map.Entry<Double, Double> entry1, Map.Entry<Double, Double> entry2) {
-                        return Double.compare(entry1.getValue(), entry2.getValue());
-                    }
-                }).getKey();
-
-                if (Math.abs(fk - minorant.apply(xNext)) <= precision) {
-                    writer.write("Function: \n");
-                    for (Map.Entry<Double, Double> entry : observations.entrySet()) {
-                        writer.format("%.5f %.5f\n", entry.getKey(), entry.getValue());
-                    }
-                    writer.write("Polygonal chain: \n");
-                    for (Map.Entry<Double, Double> entry: fMinus.entrySet()) {
-                        writer.format("%.5f %.5f\n", entry.getKey(), entry.getValue());
-                    }
-                    writer.format("I calculated function for %d times", counter);
+                if (Math.abs(xNext - xPrev) < precision) {
                     writer.close();
                     return f.apply(xNext);
                 }
-                startTests++;
+                xPrev = xNext;
+                pPrev = pi;
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

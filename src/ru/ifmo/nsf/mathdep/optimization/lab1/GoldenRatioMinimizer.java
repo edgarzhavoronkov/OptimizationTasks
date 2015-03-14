@@ -72,7 +72,7 @@ public class GoldenRatioMinimizer implements SingleArgumentFunctionMinimizer {
     }
 
     @Override
-    public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision, double L, int startTests) {
+    public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision, double L) {
         return 0;
     }
 }
