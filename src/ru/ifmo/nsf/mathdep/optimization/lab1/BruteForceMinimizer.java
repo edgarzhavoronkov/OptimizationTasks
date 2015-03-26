@@ -11,7 +11,11 @@ public class BruteForceMinimizer implements SingleArgumentFunctionMinimizer {
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {
         return 0;
     }
-
+    /* Метод перебора по сетке разбивает отрезок точками
+     * и считает в каждой точке значение функции
+     * и берет наименьшее из получившихся. Очевидно, что чем больше
+     * точек мы возьмем, то с большей вероятностью мы найдем точный минимум.
+     */
     @Override
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, int iterations) {
         ArrayList<Double> values = new ArrayList<>();

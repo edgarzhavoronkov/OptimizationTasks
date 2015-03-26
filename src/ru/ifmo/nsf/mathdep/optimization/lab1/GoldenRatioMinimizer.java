@@ -12,7 +12,6 @@ public class GoldenRatioMinimizer implements SingleArgumentFunctionMinimizer {
     public double minimize(DoubleFunction<Double> f, double lowerBound, double higherBound, double precision) {
         int counter = 0;
         try {
-            double mid = 0;
             double finalLength = higherBound - lowerBound;
             PrintWriter writer = new PrintWriter("GoldenRatioMinimizerOut.txt");
 
@@ -20,7 +19,6 @@ public class GoldenRatioMinimizer implements SingleArgumentFunctionMinimizer {
                 double left = higherBound - ((higherBound - lowerBound) / GOLDEN_RATIO);
                 double right = lowerBound + ((higherBound - lowerBound) / GOLDEN_RATIO);
 
-                //debug info, todo: remove
                 double intervalLength = higherBound - lowerBound;
 
                 double fLeft = f.apply(left);
@@ -50,9 +48,6 @@ public class GoldenRatioMinimizer implements SingleArgumentFunctionMinimizer {
         while (!(Math.abs(higherBound - lowerBound) < precision)) {
             double left = higherBound - ((higherBound - lowerBound) / GOLDEN_RATIO);
             double right = lowerBound + ((higherBound - lowerBound) / GOLDEN_RATIO);
-
-            //debug info, todo: remove
-            double intervalLength = higherBound - lowerBound;
 
             double fLeft = f.apply(left);
             double fRight = f.apply(right);

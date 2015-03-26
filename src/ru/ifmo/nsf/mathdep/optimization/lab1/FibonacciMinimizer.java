@@ -9,9 +9,12 @@ import java.util.function.DoubleFunction;
 
 public class FibonacciMinimizer implements SingleArgumentFunctionMinimizer {
 
+    /*
+        Вспомогательная функция для подсчета энного числа Фибоначчи за линейное время
+     */
 
     private Long fib(int n) {
-        if (n > 0 && n < 2) {
+        if (n >= 0 && n < 2) {
             return (long) n;
         } else {
             long a = 0;

@@ -12,6 +12,16 @@ import java.util.function.Predicate;
 public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer {
     private final double EPS = 1e-1;
 
+    /*
+        Метод градиентного спуска. Основан на утверждении, что градиент, взятый со знаком минус
+        показывает направление скорейшего убывания функции. Соответственно, шагая из заданной начальной точки
+        вдоль этого направления рано или поздно мы придем в точку минимума. В данном случае, мы выбираем величину шага
+        равной некоторой константе. Два предиката в параметрах функции - это ограничения для икса и игрека.
+        (мы ищем минимум в некоторой области). Условия остановки алгоритма - либо разность значений функции меньше
+        заданной точности, либо новая точка отстоит от старой точки на расстояние, меньшее той же точности, либо же
+        новая точка вышла за пределы области, в которой мы ищем минимум.
+     */
+
     @Override
     public Point2D minimize(BiFunction<Double, Double, Double> f,
                             Point2D startPoint,
@@ -47,14 +57,20 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
                 }
 
                 startPoint = new Point2D(nextPoint.getX(), nextPoint.getY());
-
-                
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         return null;
     }
+
+    /*
+        Версия градиентного спуска, в которой длина шага считается на каждом этапе. Будем считать
+        ее из вот такого соображения: пусть длина шага будет такой, что функция f( xi - lambda * grad( f(xi) ) )
+        То есть, шагая вдоль направления антиградиента, мы хотим прийти в точку минимума на этом луче. В данном
+        случае придется на каждом шаге решать задачу одномерной оптимизации. Мы воспользуемся методом золотого сечения
+        Условия остановки алгоритма - те же, что и выше
+     */
 
     @Override
     public Point2D minimize(BiFunction<Double, Double, Double> f,
@@ -68,7 +84,7 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
             int gradientComputationsCounter = 0;
             int functionComputationsCounter = 0;
             PrintWriter writer = new PrintWriter("GradientDescentMinimizerOut2.txt");
-            for (; ; ) {
+            for (;;) {
                 Point2D grad = getGradient(f, startPoint);
                 gradientComputationsCounter++;
                 final Point2D finalStartPoint = startPoint;
@@ -78,7 +94,7 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
                             return f.apply(point.getX(), point.getY());
                         },
                         0.0,
-                        10.0,
+                        1.0,
                         1e-2);
 
                 nextPoint = Point2D.sub(startPoint, Point2D.mul(grad, stepSize));
@@ -102,14 +118,17 @@ public class GradientDescentMinimizer implements DoubleArgumentFunctionMinimizer
         return null;
     }
 
+    /*
+        Вспомогательная функция для подсчета градиента. Частные производные в заданной точке считаются численно.
+        Например, частная производная по иксу считается следующим образом: берем точку (x,y), к иксу прибавляем
+        маленькое эпсилон, получаем точку (x + eps, y). Считаем разность между значениями функции в этих двух
+        точках и делим на эпсилон. Для игрека все то же самое, только фиксируем значение икса.
+     */
+
     private Point2D getGradient(BiFunction<Double, Double, Double> f, Point2D point) {
         double x = (f.apply(point.getX() + EPS, point.getY()) - f.apply(point.getX(), point.getY())) / EPS;
         double y = (f.apply(point.getX(), point.getY() + EPS) - f.apply(point.getX(), point.getY())) / EPS;
         return new Point2D(x, y);
-    }
-
-    private double getNorm(double x) {
-        return x * x;
     }
 
     private double getNorm(Point2D point) {

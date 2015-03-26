@@ -16,7 +16,6 @@ public class DichotomyMinimizer implements SingleArgumentFunctionMinimizer {
             while (!(Math.abs(higherBound - lowerBound) < precision)) {
                 mid = (higherBound + lowerBound) / 2;
 
-                //debug info, todo: remove
                 double intervalLength = higherBound - lowerBound;
 
 

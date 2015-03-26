@@ -45,7 +45,7 @@ public class main {
 
         Point2D anotherRes = descentMinimizer.minimize(
                 g,
-                new Point2D(5, 5),
+                new Point2D(2, 2),
                 (Double x) -> x >= 0 && x <= 10,
                 (Double y) -> y >= 0 && y <= 10,
                 1e-2);
